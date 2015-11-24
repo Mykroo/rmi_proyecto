@@ -38,7 +38,7 @@ public class ImplementacionAEjecutar extends UnicastRemoteObject implements  AEj
             img=new Imagen(localizacion);
         } catch (Exception ex) {
         }
-        System.out.println("Se llamo interfaz");
+        System.out.println("Se llamo interface");
         try {
             imagen=ImageIO.read(new File(localizacion));
         } catch (IOException ex) {

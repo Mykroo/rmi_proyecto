@@ -175,7 +175,7 @@ public class Client extends javax.swing.JFrame {
         try {
             registry=LocateRegistry.getRegistry("localhost",55555);
         } catch (RemoteException ex) {
-            System.out.println("Problema registry");
+            System.out.println("Problema registro");
         }
         try {
             stub=(Ejecutor)registry.lookup("ServicioFiltro");
