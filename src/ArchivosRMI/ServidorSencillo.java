@@ -19,12 +19,27 @@ public class ServidorSencillo {
     public interface Server extends Remote {
 
         public String sayHello() throws RemoteException;
+
         public OutputStream getOutputStream(File f) throws IOException;
+
         public InputStream getInputStream(File f) throws IOException;
+        
+        public File[] listaArchivos() throws Exception;
     }
 
     public static class ServerImpl extends UnicastRemoteObject
             implements Server {
+
+        public File[] listaArchivos() {
+            File folder = new File("archivos/");            
+            File[] listOfFiles = folder.listFiles();
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    System.out.println(file.getName());                    
+                }
+            }
+            return listOfFiles;
+        }
 
         public OutputStream getOutputStream(File f) throws IOException {
             return new RMIOutputStream(new RMIOutputStreamImpl(new FileOutputStream(f)));
@@ -68,5 +83,5 @@ public class ServidorSencillo {
         }
         server.stop();
     }
-    
+
 }

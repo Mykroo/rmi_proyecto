@@ -44,21 +44,24 @@ public class ClienteIO {
         
         String url = "rmi://localhost/server";
         Server server = (Server) Naming.lookup(url);
+        String img_test="//home//mykro//Desktop//wdg1.jpg";
+        String img_dwn="archivos//.jpg";
+        String img_up=img_test;
 
         System.out.println("Server says: " + server.sayHello());
         System.out.println("");
-        File testFile = new File("//home//mykro//Pictures//wdg1.jpg");
+        File testFile = new File(img_dwn);
         long len = testFile.length();
         
         long t=0;
         t = System.currentTimeMillis();
-        download(server, testFile, new File("//home//mykro//Desktop//prueba.jpg"));
+        download(server, testFile, new File(img_dwn));
         t = (System.currentTimeMillis() - t) / 1000;
         System.out.println("download: " + (len / 1 /1000000d) + 
             " MB/s");
         
         t = System.currentTimeMillis();
-        upload(server, new File("//home//mykro//Desktop//prueba.jpg"), new File("test1.jpg"));
+        upload(server, new File(img_dwn), new File("test1.jpg"));
         t = (System.currentTimeMillis() - t) / 1000;
         System.out.println("upload: " + (len / 1 / 1000000d) + 
             " MB/s");
