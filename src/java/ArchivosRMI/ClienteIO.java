@@ -43,22 +43,25 @@ public class ClienteIO {
     public static void main(String[] args) throws Exception {
         
         String url = "rmi://localhost/server";
+        String img_dwn = "//home//mykro//Pictures//universe.jpg";
+        String img_test = "//home//mykro//Desktop//universe.jpg";
+        String img_up =img_test;
         Server server = (Server) Naming.lookup(url);
 
         System.out.println("Server says: " + server.sayHello());
         System.out.println("");
-        File testFile = new File("//home//mykro//Pictures//wdg1.jpg");
+        File testFile = new File(img_dwn);
         long len = testFile.length();
         
         long t=0;
         t = System.currentTimeMillis();
-        download(server, testFile, new File("//home//mykro//Desktop//prueba.jpg"));
+        download(server, testFile, new File(img_test));
         t = (System.currentTimeMillis() - t) / 1000;
         System.out.println("download: " + (len / 1 /1000000d) + 
             " MB/s");
         
         t = System.currentTimeMillis();
-        upload(server, new File("//home//mykro//Desktop//prueba.jpg"), new File("test1.jpg"));
+        upload(server, new File(img_test), new File("test1.jpg"));
         t = (System.currentTimeMillis() - t) / 1000;
         System.out.println("upload: " + (len / 1 / 1000000d) + 
             " MB/s");
