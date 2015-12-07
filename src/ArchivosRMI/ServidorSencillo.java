@@ -6,6 +6,7 @@
 package ArchivosRMI;
 
 import java.rmi.*;
+import java.io.*;
 import java.rmi.registry.*;
 import java.rmi.server.*;
 
@@ -13,14 +14,25 @@ import java.rmi.server.*;
  *
  * @author mykro
  */
-public class TestServer {
+public class ServidorSencillo {
 
     public interface Server extends Remote {
+
         public String sayHello() throws RemoteException;
+        public OutputStream getOutputStream(File f) throws IOException;
+        public InputStream getInputStream(File f) throws IOException;
     }
-    
+
     public static class ServerImpl extends UnicastRemoteObject
             implements Server {
+
+        public OutputStream getOutputStream(File f) throws IOException {
+            return new RMIOutputStream(new RMIOutputStreamImpl(new FileOutputStream(f)));
+        }
+
+        public InputStream getInputStream(File f) throws IOException {
+            return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
+        }
 
         Registry rmiRegistry;
 
@@ -40,18 +52,21 @@ public class TestServer {
             unexportObject(rmiRegistry, true);
             System.out.println("Server stopped");
         }
-        
+
         public String sayHello() {
-            return "Hello world";
+            return "Hola clientes ";
         }
-        
+
     }
 
     public static void main(String[] args) throws Exception {
         ServerImpl server = new ServerImpl();
         server.start();
-        Thread.sleep(5 * 60 * 1000); // run for 5 minutes
+        for (int i = 0; i > -1; i++) {
+            System.out.println("Servidor en ejecucion por " + i * 5 + " segundos");
+            Thread.sleep(5 * 1000); // run for 5 minutes            
+        }
         server.stop();
     }
-
+    
 }

@@ -8,7 +8,7 @@ package ArchivosRMI;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import static javax.management.Query.*;
+
 
 /**
  *
@@ -39,7 +39,7 @@ public class RMIInputStreamImpl implements RMIInputStreamInterf {
             b = new byte[len];
             
         int len2 = in.read(b);
-        if (len2 &lt; 0)
+        if (len2 < 0)
             return null; // EOF reached
         
         if (len2 != len) {

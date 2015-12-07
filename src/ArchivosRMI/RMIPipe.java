@@ -6,7 +6,7 @@
 package ArchivosRMI;
 
 import java.io.*;
-import java.util.Hashtable;
+import java.util.*;
 
 /**
  *
@@ -15,10 +15,9 @@ import java.util.Hashtable;
 public class RMIPipe implements Serializable {
 
     final public static int BUF_SIZE = 1024 * 64;
-    private static int keySeed = 0;
-    private static Hashtable&lt;Integer,OutputStream&gt; 
-    registry = new Hashtable&lt;Integer,OutputStream&gt;();
-
+    private static int keySeed = 0;    
+    private static Hashtable<Integer, OutputStream>
+            registry = new Hashtable<Integer, OutputStream>();   
     private transient int key;
     private transient InputStream in;
     private transient boolean isOutputRegistration;
@@ -58,9 +57,9 @@ public class RMIPipe implements Serializable {
         do {
             len = in.read(b);
             out.writeInt(len);
-            if (len &gt;= 0)
+            if (len >= 0)
                 out.write(b, 0, len);
-        } while (len &gt;= 0);
+        } while (len >= 0);
     }
 
     private void readObject(ObjectInputStream in) throws 
@@ -71,11 +70,11 @@ public class RMIPipe implements Serializable {
         int len;
         do {
             len = in.readInt();
-            if (len &gt;= 0) {
+            if (len >= 0) {
                 in.readFully(b, 0, len);
                 out.write(b, 0, len);
             }
-        } while (len &gt;= 0);
+        } while (len >= 0);
     }
 
 }
