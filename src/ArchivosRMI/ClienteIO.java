@@ -15,12 +15,12 @@ import ArchivosRMI.ServidorSencillo.Server;
  */
 public class ClienteIO {
     
-    final public static int BUF_SIZE = 1024 * 64;
+    final public static int BUFFER_TAM = 1024 * 64;
     
-    public static void copy(InputStream in, OutputStream out) 
+    public static void copia(InputStream in, OutputStream out) 
             throws IOException {
         System.out.println("using byte[] read/write");
-        byte[] b = new byte[BUF_SIZE];
+        byte[] b = new byte[BUFFER_TAM];
         int len;
         while ((len = in.read(b)) >= 0) {
             out.write(b, 0, len);
@@ -30,12 +30,12 @@ public class ClienteIO {
     }
     
     public static void upload(Server server, File src, File dest) throws IOException {
-        copy (new FileInputStream(src), 
+        copia (new FileInputStream(src), 
         server.getOutputStream(dest));
     }
 
     public static void download(Server server, File src,File dest) throws IOException {
-        copy (server.getInputStream(src), 
+        copia (server.getInputStream(src), 
         new FileOutputStream(dest));
     }
 
@@ -44,7 +44,7 @@ public class ClienteIO {
         String url = "rmi://192.168.1.77/server";
         Server server = (Server) Naming.lookup(url);
         String img_test="/home/mykro/Desktop/pito1.jpg";
-        String img_dwn="archivos/wdg3.jpg";
+        String img_dwn="archivos/test1.jpg";
         String img_up=img_test;
 
         System.out.println("Server says: " + server.sayHello());
@@ -60,7 +60,7 @@ public class ClienteIO {
             " MB/s");
         
         t = System.currentTimeMillis();
-        upload(server, new File(img_dwn), new File("archivos/prueba2.jpg"));
+        upload(server, new File(img_dwn), new File("archivos/universe.jpg"));
         t = (System.currentTimeMillis() - t) / 1000;
         System.out.println("upload: " + (len / 1 / 1000000d) + 
             " MB/s");

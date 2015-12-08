@@ -89,7 +89,7 @@ public class ClienteUI extends javax.swing.JFrame {
 
     private void serv1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serv1ActionPerformed
         try {
-            new TablaUI("localhost").setVisible(true);        // TODO add your handling code here:
+            new TablaUI("192.168.1.76").setVisible(true);        // TODO add your handling code here:
         } catch (Exception ex) {
             Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error en cliente al llamar TABLAUI");
@@ -98,7 +98,7 @@ public class ClienteUI extends javax.swing.JFrame {
 
     private void serv2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serv2ActionPerformed
         try {
-            new TablaUI("localhost").setVisible(true);// TODO add your handling code here:
+            new TablaUI("192.168.1.77").setVisible(true);// TODO add your handling code here:
         } catch (Exception ex) {
             Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error en cliente al llamar TABLAUI");

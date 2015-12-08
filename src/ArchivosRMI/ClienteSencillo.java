@@ -17,7 +17,7 @@ public class ClienteSencillo {
 
     public static void main(String[] args) throws Exception {
 
-        String url = "rmi://192.168.1.77/server";        
+        String url = "rmi://192.168.1.76/server";        
         String hostname = InetAddress.getLocalHost().getHostAddress();
         System.out.println("this host IP is " + hostname);
         Server server = (Server) Naming.lookup(url);

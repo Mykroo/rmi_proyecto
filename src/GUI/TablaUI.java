@@ -6,11 +6,12 @@
 package GUI;
 
 import ArchivosRMI.ServidorSencillo.Server;
-import java.io.File;
+import java.io.*;
 import java.rmi.Naming;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,11 +23,36 @@ public class TablaUI extends javax.swing.JFrame {
 
     /**
      * Creates new form TablaUI
+     * @param serv
      */
+    final public static int BUFFER_TAM = 1024 * 64;
+    
+    public static void copia(InputStream in, OutputStream out) 
+            throws IOException {
+        System.out.println("using byte[] read/write");
+        byte[] b = new byte[BUFFER_TAM];
+        int len;
+        while ((len = in.read(b)) >= 0) {
+            out.write(b, 0, len);
+        }
+        in.close();
+        out.close();
+    }
+    
+    public static void upload(Server server, File src, File dest) throws IOException {
+        copia (new FileInputStream(src), 
+        server.getOutputStream(dest));
+    }
+
+    public static void download(Server server, File src,File dest) throws IOException {
+        copia (server.getInputStream(src), 
+        new FileOutputStream(dest));
+    }
     public void coneccionServer(String serv) {
-        System.out.println("rmi://"+serv.substring(0,9)+"/server");        
+        System.out.println("aqui estoy " + serv);
+        System.out.println("rmi://"+serv+"/server");        
         try {          
-            String url = "rmi://"+"localhost"+"/server";
+            String url = "rmi://"+serv+"/server";
             System.out.println(url);
             server = (Server) Naming.lookup(url);
             System.out.println(server.sayHello());
@@ -37,11 +63,11 @@ public class TablaUI extends javax.swing.JFrame {
             System.out.println("Lista de archivos");
             Date fecha = new Date();
             for (File f : lista_archivos) {
-                if (f.isFile()) {
+                //if (f.isFile()) {
                     //System.out.println(file.getName());                    
                     //System.out.println(f.getPath());
-                    datos.addRow(new Object[]{f.getPath(), "1.0", fecha});
-                }
+                    datos.addRow(new Object[]{f.getName(), "1.0", fecha});
+                //}
             }
             System.out.println(" -----------Server says: " + server.sayHello());
 
@@ -53,7 +79,7 @@ public class TablaUI extends javax.swing.JFrame {
     public void llenaTabla() {
         String[] columnNames = {"Archivo ",
             "Version",
-            "Ultima escritura",};
+            "Ultima escritura"};
 
         Object[][] data = {
             
@@ -68,7 +94,8 @@ public class TablaUI extends javax.swing.JFrame {
 //        datos.addColumn("Nombre ");
 //        datos.addColumn("Version ");
 //        datos.addColumn("Ultima actualización");
-        //datos.addRow();        
+        //datos.addRow();       
+        System.out.println("constructor ui tabla: " + ipServ);
         initComponents();
         llenaTabla();
         coneccionServer(ipServ);
@@ -91,6 +118,7 @@ public class TablaUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        tablaDatos.setAutoCreateRowSorter(true);
         tablaDatos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -112,6 +140,11 @@ public class TablaUI extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tablaDatos);
 
         nuevoArchivo.setText("Agregar archivo al servidor");
+        nuevoArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevoArchivoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -119,15 +152,15 @@ public class TablaUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(nuevoArchivo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
+            .addComponent(nuevoArchivo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nuevoArchivo)
                 .addContainerGap())
@@ -135,6 +168,19 @@ public class TablaUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void nuevoArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoArchivoActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fc=new JFileChooser("/home/mykro/Pictures/");
+        if(fc.showOpenDialog(this)==JFileChooser.APPROVE_OPTION){
+            try {
+                upload(server, fc.getSelectedFile(), new File("archivos/"+fc.getSelectedFile().getName()));
+            } catch (IOException ex) {
+                Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_nuevoArchivoActionPerformed
 
     /**
      * @param args the command line arguments
