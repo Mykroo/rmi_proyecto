@@ -31,21 +31,24 @@ public class ServidorSencillo {
             implements Server {
 
         public File[] listaArchivos() {
+            System.out.println("Peticion lista de archivos");
             File folder = new File("archivos/");            
             File[] listOfFiles = folder.listFiles();
             for (File file : listOfFiles) {
                 if (file.isFile()) {
-                    System.out.println(file.getName());                    
+                    //System.out.println(file.getName());                    
                 }
-            }
+            }            
             return listOfFiles;
         }
 
         public OutputStream getOutputStream(File f) throws IOException {
+            System.out.println("Peticion de descarga");
             return new RMIOutputStream(new RMIOutputStreamImpl(new FileOutputStream(f)));
         }
 
         public InputStream getInputStream(File f) throws IOException {
+            System.out.println("Peticion de escritura");
             return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
         }
 
@@ -57,7 +60,7 @@ public class ServidorSencillo {
 
         public void start() throws Exception {
             rmiRegistry = LocateRegistry.createRegistry(1099);
-            rmiRegistry.bind("server", this);
+            rmiRegistry.bind("server", this);            
             System.out.println("Server started");
         }
 
@@ -69,6 +72,7 @@ public class ServidorSencillo {
         }
 
         public String sayHello() {
+            System.out.println("Peticion de saludo");
             return "Hola clientes ";
         }
 

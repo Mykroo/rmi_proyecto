@@ -5,6 +5,9 @@
  */
 package GUI;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author mykro
@@ -28,8 +31,8 @@ public class ClienteUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        serv1 = new javax.swing.JButton();
+        serv2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -37,10 +40,20 @@ public class ClienteUI extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Cliente Quorum");
 
-        jButton1.setText("Archivos Servidor 1");
+        serv1.setText("Archivos Servidor 1");
+        serv1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serv1ActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Archivos Servidor 2");
-        jButton2.setToolTipText("");
+        serv2.setText("Archivos Servidor 2");
+        serv2.setToolTipText("");
+        serv2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serv2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -51,9 +64,9 @@ public class ClienteUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(serv1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)))
+                        .addComponent(serv2)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -63,16 +76,35 @@ public class ClienteUI extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(serv1)
+                    .addComponent(serv2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.getAccessibleContext().setAccessibleName("serv1");
-        jButton2.getAccessibleContext().setAccessibleName("serv2");
+        serv1.getAccessibleContext().setAccessibleName("serv1");
+        serv2.getAccessibleContext().setAccessibleName("serv2");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void serv1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serv1ActionPerformed
+        try {
+            new TablaUI("localhost").setVisible(true);        // TODO add your handling code here:
+        } catch (Exception ex) {
+            Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en cliente al llamar TABLAUI");
+        }
+    }//GEN-LAST:event_serv1ActionPerformed
+
+    private void serv2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serv2ActionPerformed
+        try {
+            new TablaUI("localhost").setVisible(true);// TODO add your handling code here:
+        } catch (Exception ex) {
+            Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en cliente al llamar TABLAUI");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_serv2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -110,8 +142,8 @@ public class ClienteUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton serv1;
+    private javax.swing.JButton serv2;
     // End of variables declaration//GEN-END:variables
 }

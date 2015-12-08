@@ -8,6 +8,10 @@ package GUI;
 import ArchivosRMI.ServidorSencillo.Server;
 import java.io.File;
 import java.rmi.Naming;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,13 +23,57 @@ public class TablaUI extends javax.swing.JFrame {
     /**
      * Creates new form TablaUI
      */
-    public TablaUI() {
-        datos= new DefaultTableModel();
-        datos.addColumn("Nombre ");
-        datos.addColumn("Version ");
-        datos.addColumn("Ultima actualización");        
-        initComponents();        
-        
+    public void coneccionServer(String serv) {
+        System.out.println("rmi://"+serv.substring(0,9)+"/server");        
+        try {          
+            String url = "rmi://"+"localhost"+"/server";
+            System.out.println(url);
+            server = (Server) Naming.lookup(url);
+            System.out.println(server.sayHello());
+            File[] lista_archivos;
+            lista_archivos = server.listaArchivos();
+            Thread.sleep((int) (Math.random() * 1000) / 5); // run for 5 minutes
+            System.out.println("Conectando al servidor");
+            System.out.println("Lista de archivos");
+            Date fecha = new Date();
+            for (File f : lista_archivos) {
+                if (f.isFile()) {
+                    //System.out.println(file.getName());                    
+                    //System.out.println(f.getPath());
+                    datos.addRow(new Object[]{f.getPath(), "1.0", fecha});
+                }
+            }
+            System.out.println(" -----------Server says: " + server.sayHello());
+
+        } catch (Exception e) {
+            System.out.println("Error de conexion al servidor");
+        }
+    }
+
+    public void llenaTabla() {
+        String[] columnNames = {"Archivo ",
+            "Version",
+            "Ultima escritura",};
+
+        Object[][] data = {
+            
+        };
+
+        datos = new DefaultTableModel(data, columnNames);
+        tablaDatos.setModel(datos);
+    }
+
+    public TablaUI(String ipServ) throws Exception {
+
+//        datos.addColumn("Nombre ");
+//        datos.addColumn("Version ");
+//        datos.addColumn("Ultima actualización");
+        //datos.addRow();        
+        initComponents();
+        llenaTabla();
+        coneccionServer(ipServ);
+        System.out.println("Direccion del servidor en TablaUI: " + ipServ);
+
     }
 
     /**
@@ -37,31 +85,52 @@ public class TablaUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tablaArchivos = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaDatos = new javax.swing.JTable();
+        nuevoArchivo = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        tablaArchivos.setAutoCreateColumnsFromModel(false);
-        tablaArchivos.setModel(datos);
-        jScrollPane1.setViewportView(tablaArchivos);
-        tablaArchivos.getAccessibleContext().setAccessibleName("");
+        tablaDatos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Nombre", "Version", "ultima"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tablaDatos);
+
+        nuevoArchivo.setText("Agregar archivo al servidor");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
+            .addComponent(nuevoArchivo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nuevoArchivo)
+                .addContainerGap())
         );
 
         pack();
@@ -93,31 +162,24 @@ public class TablaUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TablaUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TablaUI().setVisible(true);
+                try {
+                    new TablaUI("1ocalhost").setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
-        String url = "rmi://localhost/server";
-        Server server = (Server) Naming.lookup(url);
-        File lista_archivos[];
-        for (int i = 0; i > -1; i++) {
-            lista_archivos=server.listaArchivos();
-            Thread.sleep((int) (Math.random()*10 *1000)/5); // run for 5 minutes
-            System.out.println("Peticion al servidor: "+i);
-            System.out.println("Lista de archivos" );      
-            for (File f : lista_archivos) {
-                //datos.addRow(lista_archivos);
-            }
-            System.out.println(" -----------Server says: " + server.sayHello());            
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tablaArchivos;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton nuevoArchivo;
+    private javax.swing.JTable tablaDatos;
     // End of variables declaration//GEN-END:variables
     private DefaultTableModel datos;
+    private Server server;
 }

@@ -34,18 +34,17 @@ public class ClienteIO {
         server.getOutputStream(dest));
     }
 
-    public static void download(Server server, File src, 
-            File dest) throws IOException {
+    public static void download(Server server, File src,File dest) throws IOException {
         copy (server.getInputStream(src), 
         new FileOutputStream(dest));
     }
 
     public static void main(String[] args) throws Exception {
         
-        String url = "rmi://localhost/server";
+        String url = "rmi://192.168.1.77/server";
         Server server = (Server) Naming.lookup(url);
-        String img_test="//home//mykro//Desktop//wdg1.jpg";
-        String img_dwn="archivos//.jpg";
+        String img_test="/home/mykro/Desktop/pito1.jpg";
+        String img_dwn="archivos/wdg3.jpg";
         String img_up=img_test;
 
         System.out.println("Server says: " + server.sayHello());
@@ -55,13 +54,13 @@ public class ClienteIO {
         
         long t=0;
         t = System.currentTimeMillis();
-        download(server, testFile, new File(img_dwn));
+        download(server, testFile, new File(img_test));
         t = (System.currentTimeMillis() - t) / 1000;
         System.out.println("download: " + (len / 1 /1000000d) + 
             " MB/s");
         
         t = System.currentTimeMillis();
-        upload(server, new File(img_dwn), new File("test1.jpg"));
+        upload(server, new File(img_dwn), new File("archivos/prueba2.jpg"));
         t = (System.currentTimeMillis() - t) / 1000;
         System.out.println("upload: " + (len / 1 / 1000000d) + 
             " MB/s");
