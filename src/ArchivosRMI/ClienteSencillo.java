@@ -17,14 +17,14 @@ public class ClienteSencillo {
 
     public static void main(String[] args) throws Exception {
 
-        String url = "rmi://192.168.1.76/server";        
+        String url = "rmi://192.168.1.77/server";        
         String hostname = InetAddress.getLocalHost().getHostAddress();
         System.out.println("this host IP is " + hostname);
         Server server = (Server) Naming.lookup(url);
         for (int i = 0; i > -1; i++) {
             Thread.sleep((int) (Math.random() * 2 * 1000)); // run for 5 minutes
             System.out.print("Peticion al servidor: " + i);
-            System.out.println(" -----------Server says: " + server.sayHello());
+            System.out.println(" -----------El Servidor te saluda: " + server.sayHello());
         }
     }
 

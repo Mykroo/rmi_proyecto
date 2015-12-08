@@ -47,7 +47,7 @@ public class ClienteIO {
         String img_dwn="archivos/test1.jpg";
         String img_up=img_test;
 
-        System.out.println("Server says: " + server.sayHello());
+        System.out.println("El Servidor te saluda : " + server.sayHello());
         System.out.println("");
         File testFile = new File(img_dwn);
         long len = testFile.length();

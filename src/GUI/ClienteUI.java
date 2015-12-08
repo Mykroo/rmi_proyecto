@@ -19,6 +19,7 @@ public class ClienteUI extends javax.swing.JFrame {
      */
     public ClienteUI() {
         initComponents();
+        //setLocation(WIDTH/2, HEIGHT/2);
     }
 
     /**
@@ -35,6 +36,8 @@ public class ClienteUI extends javax.swing.JFrame {
         serv2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setLocationByPlatform(true);
+        setMaximumSize(new java.awt.Dimension(1260, 720));
 
         jLabel1.setFont(new java.awt.Font("URW Gothic L", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -136,7 +139,9 @@ public class ClienteUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                //new ClienteUI().setLocation(200, 720);
                 new ClienteUI().setVisible(true);
+                
             }
         });
     }
