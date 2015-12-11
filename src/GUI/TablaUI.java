@@ -187,6 +187,11 @@ public class TablaUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(teisto);
 
         jButton1.setText("Guardar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -244,7 +249,7 @@ public class TablaUI extends javax.swing.JFrame {
     }//GEN-LAST:event_nuevoArchivoActionPerformed
 
     private void tablaDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaDatosMouseClicked
-        String archivo = tablaDatos.getValueAt(tablaDatos.getSelectedRow(), 0).toString();
+        archivo = tablaDatos.getValueAt(tablaDatos.getSelectedRow(), 0).toString();
 //        try {
             //download(server, new File("archivos/" + archivo), new File(home + "/Desktop/" + archivo));
             //teisto.setText("Holii \n pinche mamada no jala\n .i.i.i.i.i.i.i.");
@@ -283,6 +288,19 @@ public class TablaUI extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_nuevoArchivo2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            // TODO add your handling code here:
+            if(!server.TextoStreamIn("archivos/"+archivo, teisto.getText())){
+                JOptionPane.showMessageDialog(null, "Descarga la versión mas nueva");
+            }else
+                System.out.println("Error");
+        } catch (IOException ex) {
+            Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -337,4 +355,5 @@ public class TablaUI extends javax.swing.JFrame {
     private Server server;
     private String temp_path;
     private String home;
+    private String archivo;
 }

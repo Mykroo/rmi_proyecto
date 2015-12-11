@@ -23,10 +23,12 @@ public class ServidorSencillo {
         public OutputStream getOutputStream(File f) throws IOException;
 
         public InputStream getInputStream(File f) throws IOException;
-        
+
         public File[] listaArchivos() throws Exception;
-        
-        public String TextoStreamOut(String f,String fi) throws IOException;
+
+        public String TextoStreamOut(String f, String fi) throws IOException;
+
+        public boolean TextoStreamIn(String f, String texto) throws IOException;
     }
 
     public static class ServerImpl extends UnicastRemoteObject
@@ -34,44 +36,59 @@ public class ServidorSencillo {
 
         public File[] listaArchivos() {
             System.out.println("Peticion lista de archivos");
-            File folder = new File("archivos/");            
+            File folder = new File("archivos/");
             File[] listaDeArchivs = folder.listFiles();
             for (File file : listaDeArchivs) {
                 if (file.isFile()) {
                     //System.out.println(file.getName());                    
                 }
-            }            
+            }
             return listaDeArchivs;
         }
-        public String TextoStreamOut(String f,String fi)throws IOException{
-            String texto="";            
-            String aux="";            
-            BufferedReader br=new BufferedReader(new FileReader(f));
+
+        public String TextoStreamOut(String f, String fi) throws IOException {
+            String texto = "";
+            String aux = "";
+            BufferedReader br = new BufferedReader(new FileReader(f));
             System.out.println("Leyendo texto");
-            while((aux= br.readLine()) != null){
-                texto+=aux+"\n";
-            }            
+            while ((aux = br.readLine()) != null) {
+                texto += aux + "\n";
+            }
             br.close();
             return texto;
         }
-        public String TextoStreamIn(String f)throws IOException{
-            String texto="";            
-            String aux="";            
-//            PrintWriter br=new BufferedReader(new FileReader(f));
-//            System.out.println("Leyendo texto");
-//            while((aux= br.readLine()) != null){
-//                texto+=aux+"\n";
-//            }            
-//            br.close();
-            return texto;
+
+        public boolean TextoStreamIn(String f, String texto) throws IOException {
+            BufferedWriter pr = new BufferedWriter(new FileWriter(f));
+            System.out.println("Guardando texto");
+            pr.write(texto);
+            pr.close();
+            return true;
         }
-        public int getVersion(File f){
+
+        public int getVersion(File f) {
             return 1;
         }
-        
+
         public OutputStream getOutputStream(File f) throws IOException {
-            System.out.println("Peticion de descarga");
-            return new RMIOutputStream(new RMIOutputStreamImpl(new FileOutputStream(f)));
+            System.out.println("Peticion de escritura");
+            File[] listaDeArchivos = listaArchivos();
+            OutputStream auxiliar = null;
+            boolean band = false;
+            for (File file : listaDeArchivos) {
+                if (file.getName().equals(f.getName())) {
+                    System.out.println("No puedes cargarlo, descarga la versión mas reciente");
+                    band = true;
+                    break;
+                }
+            }
+
+            if (band == false) {
+                System.out.println("Se subirá al servidor");
+                auxiliar = new RMIOutputStream(new RMIOutputStreamImpl(new FileOutputStream(f)));
+            }
+
+            return auxiliar;
         }
 
         public InputStream getInputStream(File f) throws IOException {
@@ -87,7 +104,7 @@ public class ServidorSencillo {
 
         public void start() throws Exception {
             rmiRegistry = LocateRegistry.createRegistry(1099);
-            rmiRegistry.bind("server", this);            
+            rmiRegistry.bind("server", this);
             System.out.println("Server started");
         }
 
