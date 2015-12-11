@@ -33,22 +33,22 @@ public class ServidorSencillo {
         public File[] listaArchivos() {
             System.out.println("Peticion lista de archivos");
             File folder = new File("archivos/");            
-            File[] listOfFiles = folder.listFiles();
-            for (File file : listOfFiles) {
+            File[] listaDeArchivs = folder.listFiles();
+            for (File file : listaDeArchivs) {
                 if (file.isFile()) {
                     //System.out.println(file.getName());                    
                 }
             }            
-            return listOfFiles;
+            return listaDeArchivs;
         }
 
         public OutputStream getOutputStream(File f) throws IOException {
-            System.out.println("Peticion de descarga");
+            System.out.println("Peticion de escritura");
             return new RMIOutputStream(new RMIOutputStreamImpl(new FileOutputStream(f)));
         }
 
         public InputStream getInputStream(File f) throws IOException {
-            System.out.println("Peticion de escritura");
+            System.out.println("Peticion de descarga");
             return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
         }
 
