@@ -7,13 +7,17 @@ package GUI;
 
 import ArchivosRMI.ServidorSencillo.Server;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -42,7 +46,15 @@ public class TablaUI extends javax.swing.JFrame {
     }
 
     public static void upload(Server server, File src, File dest) throws IOException {
-        copia(new FileInputStream(src), server.getOutputStream(dest));
+        try {            
+            OutputStream archivo=server.getOutputStream(dest);
+            copia(new FileInputStream(src), archivo);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Descarga la versión mas nueva");/* jo=new JOptionPane();
+            jo.;
+            System.out.println("Descarga la version mas nueva");*/
+        }
     }
 
     public static void download(Server server, File src, File dest) throws IOException {
@@ -95,15 +107,14 @@ public class TablaUI extends javax.swing.JFrame {
 
     public TablaUI(String ipServ) throws Exception {
 
+//        datos.addColumn("Nombre ");
+//        datos.addColumn("Version ");
+//        datos.addColumn("Ultima actualización");
+        //datos.addRow();       
         //System.out.println("constructor ui tabla: " + ipServ);
-//        Properties prop=System.getProperties();
-//        String []pr=prop.toString().split(", ");
-//        for (String p : pr) {
-//            System.out.println(p);
-//        }
         initComponents();
         this.setLocation(500, 100);
-        lang = System.getProperty("user.language");        
+        temp_path = System.getProperty("user.language");
         home = System.getProperty("user.home");
         initTabla();
         coneccionServer(ipServ);
@@ -124,9 +135,10 @@ public class TablaUI extends javax.swing.JFrame {
         tablaDatos = new javax.swing.JTable();
         nuevoArchivo = new javax.swing.JButton();
         nuevoArchivo2 = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
-        texto = new javax.swing.JTextArea();
+        teisto = new javax.swing.JTextArea();
+        jSeparator1 = new javax.swing.JSeparator();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -170,42 +182,48 @@ public class TablaUI extends javax.swing.JFrame {
             }
         });
 
-        texto.setColumns(20);
-        texto.setRows(5);
-        jScrollPane1.setViewportView(texto);
+        teisto.setColumns(20);
+        teisto.setRows(5);
+        jScrollPane1.setViewportView(teisto);
+
+        jButton1.setText("Guardar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(nuevoArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(nuevoArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(53, 53, 53)
                         .addComponent(nuevoArchivo2, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(nuevoArchivo)
-                            .addComponent(nuevoArchivo2))))
+                            .addComponent(nuevoArchivo2)
+                            .addComponent(jButton1))))
                 .addContainerGap())
         );
 
@@ -214,7 +232,7 @@ public class TablaUI extends javax.swing.JFrame {
 
     private void nuevoArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoArchivoActionPerformed
         // TODO add your handling code here:
-        JFileChooser fc = new JFileChooser(home + "/Pictures/");
+        JFileChooser fc = new JFileChooser(home + "/Documents/");
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 upload(server, fc.getSelectedFile(), new File("archivos/" + fc.getSelectedFile().getName()));
@@ -227,32 +245,22 @@ public class TablaUI extends javax.swing.JFrame {
 
     private void tablaDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaDatosMouseClicked
         String archivo = tablaDatos.getValueAt(tablaDatos.getSelectedRow(), 0).toString();
-        String rutaDesc;
-        System.out.println("temp; "+temp_path+archivo);
-        int ale = JOptionPane.showConfirmDialog(null, "Deseas Descargar el archivo " + archivo + "?\n","Descargar",JOptionPane.YES_NO_OPTION);
-        rutaDesc=home+"/"+archivo;
-//        if (lang.equals("en")) {
-//            rutaDesc = home + "/Desktop/" + archivo;
-//        } else {
-//            rutaDesc = home + "/Escritorio/" + archivo;
-//        }
-        if (ale == JOptionPane.YES_OPTION) {
-
-            try {
-                download(server, new File("archivos/" + archivo), new File(rutaDesc));
-
-            } catch (IOException ex) {
-                Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Error en la descarga del archivo");
-            }
+//        try {
+            //download(server, new File("archivos/" + archivo), new File(home + "/Desktop/" + archivo));
+            //teisto.setText("Holii \n pinche mamada no jala\n .i.i.i.i.i.i.i.");
+        try {
+            teisto.setText(server.TextoStreamOut("archivos/"+archivo,""));        
+        } catch (Exception ex) {
+            Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la descarga del archivo");
         }
             // do some actions here, for example
-            // print first column value from selected row
+        // print first column value from selected row
 //            String[] props=System.getProperties().toString().split(", ");
 //            for (String prop : props) {
 //                System.out.println(prop);
 //            }                  
-            System.out.println(" click en la fila " + tablaDatos.getSelectedRow());
+        System.out.println(" click en la fila " + tablaDatos.getSelectedRow());
     }//GEN-LAST:event_tablaDatosMouseClicked
 
     private void nuevoArchivo2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoArchivo2ActionPerformed
@@ -265,7 +273,7 @@ public class TablaUI extends javax.swing.JFrame {
             Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Servidor de escritura no encontrado");
         }
-        JFileChooser fc = new JFileChooser(home + "/Pictures/");
+        JFileChooser fc = new JFileChooser(home + "/Documents/");
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 upload(server, fc.getSelectedFile(), new File("archivos/" + fc.getSelectedFile().getName()));
@@ -307,7 +315,7 @@ public class TablaUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new TablaUI("127.0.0.1").setVisible(true);
+                    new TablaUI("192.168.1.77").setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -316,17 +324,17 @@ public class TablaUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton nuevoArchivo;
     private javax.swing.JButton nuevoArchivo2;
     private javax.swing.JTable tablaDatos;
-    private javax.swing.JTextArea texto;
+    private javax.swing.JTextArea teisto;
     // End of variables declaration//GEN-END:variables
     private DefaultTableModel datos;
     private Server server;
     private String temp_path;
     private String home;
-    private String lang;
 }

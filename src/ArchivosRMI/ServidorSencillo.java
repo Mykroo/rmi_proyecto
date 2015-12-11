@@ -25,6 +25,8 @@ public class ServidorSencillo {
         public InputStream getInputStream(File f) throws IOException;
         
         public File[] listaArchivos() throws Exception;
+        
+        public String TextoStreamOut(String f,String fi) throws IOException;
     }
 
     public static class ServerImpl extends UnicastRemoteObject
@@ -41,14 +43,39 @@ public class ServidorSencillo {
             }            
             return listaDeArchivs;
         }
-
+        public String TextoStreamOut(String f,String fi)throws IOException{
+            String texto="";            
+            String aux="";            
+            BufferedReader br=new BufferedReader(new FileReader(f));
+            System.out.println("Leyendo texto");
+            while((aux= br.readLine()) != null){
+                texto+=aux+"\n";
+            }            
+            br.close();
+            return texto;
+        }
+        public String TextoStreamIn(String f)throws IOException{
+            String texto="";            
+            String aux="";            
+//            PrintWriter br=new BufferedReader(new FileReader(f));
+//            System.out.println("Leyendo texto");
+//            while((aux= br.readLine()) != null){
+//                texto+=aux+"\n";
+//            }            
+//            br.close();
+            return texto;
+        }
+        public int getVersion(File f){
+            return 1;
+        }
+        
         public OutputStream getOutputStream(File f) throws IOException {
-            System.out.println("Peticion de escritura");
+            System.out.println("Peticion de descarga");
             return new RMIOutputStream(new RMIOutputStreamImpl(new FileOutputStream(f)));
         }
 
         public InputStream getInputStream(File f) throws IOException {
-            System.out.println("Peticion de descarga");
+            System.out.println("Peticion de escritura");
             return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
         }
 
