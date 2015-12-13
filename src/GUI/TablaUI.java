@@ -7,6 +7,7 @@ package GUI;
 
 import ArchivosRMI.ServidorSencillo.Server;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -68,8 +69,8 @@ public class TablaUI extends javax.swing.JFrame {
     }
 
     public void coneccionServer(String serv) {
-        System.out.println("aqui estoy " + serv);
-        System.out.println("rmi://" + serv + "/server");
+        //System.out.println("aqui estoy " + serv);
+        //System.out.println("rmi://" + serv + "/server");
         try {
             String url = "rmi://" + serv + "/server";
             System.out.println(url);
@@ -161,6 +162,7 @@ public class TablaUI extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tablaDatos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         tablaDatos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tablaDatosMouseClicked(evt);
@@ -333,6 +335,7 @@ public class TablaUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
+                    //System.out.println(InetAddress.getLocalHost().getHostAddress());
                     new TablaUI("192.168.1.77").setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);

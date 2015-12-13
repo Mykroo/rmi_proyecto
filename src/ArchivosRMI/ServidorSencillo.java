@@ -7,8 +7,11 @@ package ArchivosRMI;
 
 import java.rmi.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.rmi.registry.*;
 import java.rmi.server.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -47,6 +50,7 @@ public class ServidorSencillo {
         }
 
         public String TextoStreamOut(String f, String fi) throws IOException {
+            sincronizar();
             String texto = "";
             String aux = "";
             BufferedReader br = new BufferedReader(new FileReader(f));
@@ -68,6 +72,30 @@ public class ServidorSencillo {
 
         public int getVersion(File f) {
             return 1;
+        }
+
+        private void sincronizar() {
+
+            try {
+                Server serv2;
+                String url = "rmi://192.168.1.77/server";
+                System.out.println(url);
+                serv2 = (Server) Naming.lookup(url);
+                System.out.println(serv2.sayHello());
+                File[] lista_archivos;
+                lista_archivos = serv2.listaArchivos();
+                if(this.listaArchivos()==lista_archivos){
+                    System.out.println("Sincronizando");
+                }else{
+                    System.out.println("Ya sincronizados");
+                }
+                Thread.sleep((int) (Math.random() * 1000) / 5); // run for 5 minutes
+                System.out.println("Conectando al servidor");
+                System.out.println("Lista de archivos");                
+                System.out.println(" -----------Server says: " + serv2.sayHello());
+            } catch (Exception e) {
+                System.out.println("Error de conexion al servidor");
+            }
         }
 
         public OutputStream getOutputStream(File f) throws IOException {
@@ -100,6 +128,14 @@ public class ServidorSencillo {
 
         public ServerImpl() throws RemoteException {
             super();
+            /*try {
+             Server server = (Server) Naming.lookup("rmi://127.0.0.1/server");
+             } catch (NotBoundException ex) {
+             Logger.getLogger(ServidorSencillo.class.getName()).log(Level.SEVERE, null, ex);
+             } catch (MalformedURLException ex) {
+             Logger.getLogger(ServidorSencillo.class.getName()).log(Level.SEVERE, null, ex);
+             }*/
+
         }
 
         public void start() throws Exception {
