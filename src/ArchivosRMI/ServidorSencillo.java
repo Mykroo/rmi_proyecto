@@ -82,8 +82,6 @@ public class ServidorSencillo {
                 if(f.getName().equals(nom)){
                     existe=true;
                     break;
-                }else{
-                    existe=false;                                        
                 }
             }
             return existe;
@@ -93,27 +91,28 @@ public class ServidorSencillo {
             try {
                 //System.out.println("arch.txt"+buscaArchivo("arch.txt"));
                 Server serv2;
-                String url = "rmi://192.168.1.77/server";
+                String url = "rmi://192.168.1.68/server";
+//                String url = "rmi://192.168.43.173/server";
                 System.out.println(url);
                 serv2 = (Server) Naming.lookup(url);
                 System.out.println(serv2.sayHello());
                 File[] lista_archivos;                
                 lista_archivos = serv2.listaArchivos();
-                
+                System.out.println("------------********************Checando sincronizacion************------------------------");
                 for (File arch_2 : lista_archivos) {
-                    if(!buscaArchivo(arch_2.getName())){
+                    if(buscaArchivo(arch_2.getName())){
                         //TablaUI.download(serv2, new File("archivos/"+arch_2.getName()), new File("archivos/"+arch_2));
-                        System.out.println("Falta archivo "+arch_2.getName()+"en este servidor");
+                        System.out.println("Falta archivo "+arch_2.getName()+" en este servidor");
                     }                    
                 }
                 for (File arch_loc : this.listaArchivos()) {
-                    if(!buscaArchivo(arch_loc.getName())){
-                        //TablaUI.download(serv2, new File("archivos/"+arch_2.getName()), new File("archivos/"+arch_2));
+                    if(buscaArchivo(arch_loc.getName())){
+//                        TablaUI.upload(serv2, new File("archivos/"+arch_loc.getName()), new File("archivos/"+arch_loc.getName()));
                         System.out.println("Falta archivo "+arch_loc.getName()+"en el otro");
                     }                    
                 }
                 if(this.listaArchivos().length==lista_archivos.length){
-                    System.out.println("Sincronizando");
+                    System.out.println("------------***************************Sincronizando************------------------------");
                 }else{
                     
                     System.out.println("Ya sincronizados");
