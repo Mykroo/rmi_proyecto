@@ -7,7 +7,6 @@ package GUI;
 
 import ArchivosRMI.ServidorSencillo.Server;
 import java.io.*;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -48,9 +47,10 @@ public class TablaUI extends javax.swing.JFrame {
 
     public static void upload(Server server, File src, File dest) throws IOException {
         try {            
+            System.out.println("Nombre del archivo a guardar es: "+dest.getName());
             OutputStream archivo=server.getOutputStream(dest);
             copia(new FileInputStream(src), archivo);
-
+            server.renombra("archivos/"+dest.getName());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Descarga la versión mas nueva");/* jo=new JOptionPane();
             jo.;
@@ -67,10 +67,26 @@ public class TablaUI extends javax.swing.JFrame {
         System.out.println("download: " + (len / 1 / 1000000d)
                 + " MB/s");
     }
+    
+    public void update() throws IOException{
+        try{
+          for(int i=0;i<tablaDatos.getRowCount();i++){
+              datos.removeRow(i);
+              i-=1;
+          }
+         File[] lista_archivos;
+         lista_archivos = server.listaArchivos(); 
+          Date fecha = new Date();
+            for (File f : lista_archivos) {
+                datos.addRow(new Object[]{f.getName(),Integer.toString(server.getVersion(f.getName())), fecha});
+            }
+        }catch(Exception e){}
+       
+    }
 
     public void coneccionServer(String serv) {
-        //System.out.println("aqui estoy " + serv);
-        //System.out.println("rmi://" + serv + "/server");
+        System.out.println("aqui estoy " + serv);
+        System.out.println("rmi://" + serv + "/server");
         try {
             String url = "rmi://" + serv + "/server";
             System.out.println(url);
@@ -140,6 +156,7 @@ public class TablaUI extends javax.swing.JFrame {
         teisto = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -162,7 +179,6 @@ public class TablaUI extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        tablaDatos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         tablaDatos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tablaDatosMouseClicked(evt);
@@ -195,16 +211,25 @@ public class TablaUI extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Actualizar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(nuevoArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(53, 53, 53)
-                        .addComponent(nuevoArchivo2, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(nuevoArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(nuevoArchivo2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -230,7 +255,8 @@ public class TablaUI extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(nuevoArchivo)
                             .addComponent(nuevoArchivo2)
-                            .addComponent(jButton1))))
+                            .addComponent(jButton1)
+                            .addComponent(jButton2))))
                 .addContainerGap())
         );
 
@@ -272,7 +298,7 @@ public class TablaUI extends javax.swing.JFrame {
 
     private void nuevoArchivo2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoArchivo2ActionPerformed
         // TODO add your handling code here:    
-        String url = "rmi://192.168.1.77/escritura";
+        String url = "rmi://192.168.1.73/escritura";
         System.out.println(url);
         try {
             server = (Server) Naming.lookup(url);
@@ -303,6 +329,12 @@ public class TablaUI extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try{
+            update();
+        }catch(Exception e){}
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -335,8 +367,7 @@ public class TablaUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    //System.out.println(InetAddress.getLocalHost().getHostAddress());
-                    new TablaUI("192.168.1.77").setVisible(true);
+                    new TablaUI("127.0.1.1").setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(TablaUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -346,6 +377,7 @@ public class TablaUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
